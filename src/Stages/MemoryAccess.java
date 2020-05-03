@@ -4,18 +4,17 @@ public class MemoryAccess {
 
     public static String[] memAccess(int[] memory, boolean[] signals,
                                      String address, String writedata,String rt){
-        String[] result=new String[]{rt,""};
+        String[] result=new String[]{rt,writedata,""};
         System.out.println("ALU result: "+writedata);
         if (!signals[3] && !signals[4]) {
             System.out.println("memory word read: xxxxxxx"
             +"\nrt/rd field: "+rt);
-            return null;
         }
         else{
             int add=Integer.parseInt(address,2);
             if(signals[3]){
                 String data=intToBin(memory[add]);
-                result[1]=data;
+                result[2]=data;
                 System.out.println("memory word read: "+data
                         +"\nrt/rd field: "+rt);
             }
