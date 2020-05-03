@@ -19,7 +19,6 @@ public class ALU {
 		if (ALUSrc = true) {
 			Operand22 = SignExtend ;
 		}
-		
 		else {
 			Operand22 = ReadData2 ;
 		}
