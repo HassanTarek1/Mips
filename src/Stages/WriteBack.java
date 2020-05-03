@@ -9,8 +9,9 @@ public class WriteBack {
             regFile[rt]=dataFromMem;
         }
         else{
+            int rd=Integer.parseInt(InstructionDecode.rd,2);
             int aluResult=Integer.parseInt(readData[1],2);
-            regFile[rt]=aluResult;
+            regFile[rd]=aluResult;
         }
     }
 }
