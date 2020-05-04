@@ -15,14 +15,16 @@ public class InstructionDecode {
     static String immediate;
     static String address;
     static String SignExtend;
-    static boolean[] signals=new boolean[7];
+    static boolean[] signals;
     static boolean RegDst=false,RegWrite=false,ALUSrc=false,Branch=false,MemRead=false,MemWrite=false,MemToReg=false;
-    static Object [] PipReg = new Object[]{Opcode,ReadData1,ReadData2,SignExtend,address,RegDst,RegWrite,ALUSrc,Branch,MemRead,MemWrite,MemToReg};
 
-
-    public static void InstDecode(String Inst,String nxtpc, Register[] regFile){
+    public static Object[] InstDecode(Object[] IF_ID, Register[] regFile){
+        String Inst=(String)IF_ID[1];
+        String nxtpc=(String)IF_ID[0];
         decode(Inst, regFile);
         ContUnit(Opcode);
+        signals=new boolean[]{RegDst,ALUSrc,RegWrite,MemRead,MemWrite,Branch,MemToReg};
+        Object [] PipReg = new Object[]{Opcode,ReadData1,ReadData2,rd,rt,rs,SignExtend,address,signals};
         System.out.println("sign-extend: "+SignExtend);
         System.out.println("Next-Pc : "+ nxtpc);
         System.out.println("rt : "+rt);
@@ -30,7 +32,7 @@ public class InstructionDecode {
         System.out.println("WB controls: MemToReg: "+((MemToReg) ? 1 : 0)+", RegWrite: "+((RegWrite) ? 1 : 0));
         System.out.println("MEM controls: MemRead: "+((MemRead) ? 1 : 0)+", MemWrite: "+((MemWrite) ? 1 : 0)+", Branch: "+((Branch) ? 1 : 0));
         System.out.println("EX controls: RegDst: "+((RegDst) ? 1 : 0)+", ALUSrc: "+((ALUSrc) ? 1 : 0));
-
+        return PipReg;
     }
 
     public static void decode(String Inst, Register[] regFile){
@@ -41,13 +43,13 @@ public class InstructionDecode {
             case 0 :
                 /*R-Type*/
                 rs = Inst.substring(6,11);
-                ReadData1 = Integer.toBinaryString(regFile[Integer.parseInt(rs,2)].getValue()); /*To be Edited*/
+                ReadData1 = Integer.toBinaryString(regFile[Integer.parseInt(rs,2)].getValue());
                 System.out.println("read data 1: "+ReadData1);
                 rt =Inst.substring(11,16);
-                ReadData2= Integer.toBinaryString(regFile[Integer.parseInt(rt,2)].getValue()); /*To be Edited*/
+                ReadData2= Integer.toBinaryString(regFile[Integer.parseInt(rt,2)].getValue());
                 System.out.println("read data 2: "+ReadData2);
                 rd = Inst.substring(16,21);
-                shamt = Integer.parseInt(Inst.substring(21,32),2);
+                shamt = Integer.parseInt(Inst.substring(21),2);
                 break;
             case 1 :
                 /*I-Type*/

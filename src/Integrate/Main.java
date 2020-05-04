@@ -2,15 +2,47 @@ package Integrate;
 import Stages.*;
 
 public class Main {
-    private Register[] regFile;
-    private String[] memory;
-    private String[] cache;
-    boolean memBus=false;
+    static Register[] regFile;
+    static int[] memory;
+    static String[] cache;
+    static boolean memBus=false;
+    static Object[][] pipRegs=new Object[4][];
+    static int cycle=0;
 
     public static void main(String[] args) {
         Main n=new Main();
         n.initRegFile();
-        n.initMem();
+        for (int i = 0; i <4 ; i++) {
+            System.out.println("\nCycle: "+cycle);
+            Object[] ifReg=Fetch.ProgCount();
+            if(pipRegs[0]!=null){
+                Object[] decodeReg=InstructionDecode.InstDecode(pipRegs[0],regFile);
+                pipRegs[0]=ifReg;
+                if(pipRegs[1]!=null){
+                    Object[] ALUreg=ALU.Execute(pipRegs[1]);
+                    pipRegs[1]=decodeReg;
+                    if (pipRegs[2]!=null){
+                        Object[] memReg=MemoryAccess.memAccess(memory,pipRegs[2]);
+                        pipRegs[2]=ALUreg;
+                        if (pipRegs[3]!=null){
+                            WriteBack.writeBack(regFile,pipRegs[3]);
+                            pipRegs[3]=memReg;
+                        }else{
+                            pipRegs[3]=memReg;
+                        }
+                    }else{
+                        pipRegs[2]=ALUreg;
+                    }
+                }else{
+                    pipRegs[1]=decodeReg;
+                }
+
+            }else{
+                pipRegs[0]=ifReg;
+            }
+            cycle++;
+        }
+
 
         
     }
@@ -35,11 +67,5 @@ public class Main {
         this.regFile[31]=new Register("ra","return address",0);
 
     }
-    public void initMem(){
-        this.memory=new String[2048];
-        for (String n:this.memory
-             ) {
-            n="00000000000000000000000000000000";
-        }
-    }
+
 }

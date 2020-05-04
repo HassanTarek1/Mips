@@ -1,23 +1,43 @@
 package Stages;
 
+import java.util.Arrays;
+
 public class ALU {
 
 	static int zero;
 	static String Opcode;
 	static String BranchAddressResult; 
 	static int ALUresult;
-	static boolean RegDst=InstructionDecode.signals[0],RegWrite=InstructionDecode.signals[2]
-			,ALUSrc=InstructionDecode.signals[1],Branch=InstructionDecode.signals[5]
-			,MemRead=InstructionDecode.signals[3],MemWrite=InstructionDecode.signals[4],MemToReg=InstructionDecode.signals[6];
-    static Object [] PipReg = new Object[]{zero,BranchAddressResult,ALUresult,InstructionDecode.ReadData1,InstructionDecode.rs,Branch,MemRead,MemWrite,MemToReg,RegWrite};
+	static boolean[] signals;
+	static String ReadData1;
+	static String ReadData2;
+	static String signExtend;
+	static String rd;
+	static String rt;
+	static String rs;
+	static String nxtpc;
+	static boolean RegDst=false,RegWrite=false,ALUSrc=false,Branch=false,MemRead=false,MemWrite=false,MemToReg=false;
+
     //PipReg to be edited
 	//all control values are taken from Hoba and also their print 
 	
-	public static void Execute(String ReadData1 , String ReadData2 , String SignExtend ,String nxtpc) {
+	public static Object[] Execute(Object[] PipReg) {
+		signals=(boolean[])PipReg[8];
+		Opcode=(String)PipReg[0];
+		ReadData1=(String)PipReg[1];
+		ReadData2=(String)PipReg[2];
+		rd=(String)PipReg[3];
+		rt=(String)PipReg[4];
+		rs=(String)PipReg[5];
+		signExtend=(String)PipReg[6];
+		nxtpc=(String)PipReg[7];
+		RegDst=signals[0];RegWrite=signals[2];
+				ALUSrc=signals[1];Branch=signals[5]
+				;MemRead=signals[3];MemWrite=signals[4];MemToReg=signals[6];
 		String Operand22 = "" ;
 		
-		if (ALUSrc = true) {
-			Operand22 = SignExtend ;
+		if (ALUSrc) {
+			Operand22 = signExtend ;
 		}
 		else {
 			Operand22 = ReadData2 ;
@@ -28,7 +48,7 @@ public class ALU {
 		
 		Evaluate( Opcode , Operand1 , Operand2 );
 		
-		int SignExtendInteger = Integer.parseInt( SignExtend , 2);
+		int SignExtendInteger = Integer.parseInt( signExtend , 2);
 		
 		int pc = Integer.parseInt( nxtpc , 2);
 		
@@ -41,8 +61,8 @@ public class ALU {
 		System.out.println("rt/rd register: "+ InstructionDecode.rs);//need to check
 		System.out.println("WB controls: MemToReg: "+((MemToReg) ? 1 : 0)+", RegWrite: "+((RegWrite) ? 1 : 0));
 		System.out.println("MEM controls: MemRead: "+((MemRead) ? 1 : 0)+", MemWrite: "+((MemWrite) ? 1 : 0)+", Branch: "+((Branch) ? 1 : 0));
-		
-		
+		Object [] ALUreg = new Object[]{zero,BranchAddressResult,ALUresult,ReadData1,ReadData2,rt,rd,signals};
+		return ALUreg;
 	}
 	public static void Evaluate(String Opcode, int Operand1, int Operand2) {
 
