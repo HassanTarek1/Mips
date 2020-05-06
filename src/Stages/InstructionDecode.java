@@ -16,11 +16,15 @@ public class InstructionDecode {
     static String address;
     static String SignExtend;
     static boolean[] signals;
-    static boolean RegDst=false,RegWrite=false,ALUSrc=false,Branch=false,MemRead=false,MemWrite=false,MemToReg=false;
+    public static boolean PCsrc=false;
+    public static boolean RegDst=false,RegWrite=false,ALUSrc=false,Branch=false,MemRead=false,MemWrite=false,MemToReg=false;
 
     public static Object[] InstDecode(Object[] IF_ID, Register[] regFile){
+        System.out.println("\nDecode......."+"\n");
         String Inst=(String)IF_ID[1];
         String nxtpc=(String)IF_ID[0];
+        immediate = Inst.substring(16,32);
+        SignExtend(immediate);
         decode(Inst, regFile);
         ContUnit(Opcode);
         signals=new boolean[]{RegDst,ALUSrc,RegWrite,MemRead,MemWrite,Branch,MemToReg};
@@ -60,8 +64,7 @@ public class InstructionDecode {
                 ReadData2= Integer.toBinaryString(regFile[Integer.parseInt(rt,2)].getValue()); /*To be Edited*/
                 System.out.println("read data 2: "+ReadData2);
                 rd = "don't care";
-                immediate = Inst.substring(16,32);
-                SignExtend(immediate);
+               
                 break;
             case 2 :
                 /*J-Type*/
@@ -95,6 +98,7 @@ public class InstructionDecode {
                 MemWrite=false;
                 Branch=false;
                 MemToReg=false;
+                PCsrc=false;
                 break;
             case 1 :
                 /*I-type*/
@@ -108,6 +112,7 @@ public class InstructionDecode {
                         MemWrite=false;
                         Branch=false;
                         MemToReg=false;
+                        PCsrc=false;
                         break;
                     case "0111" :
                         /*Andim*/
@@ -118,6 +123,7 @@ public class InstructionDecode {
                         MemWrite=false;
                         Branch=false;
                         MemToReg=false;
+                        PCsrc=false;
                         break;
                     case "1000" :
                         /*Lw*/
@@ -128,6 +134,7 @@ public class InstructionDecode {
                         MemWrite=false;
                         Branch=false;
                         MemToReg=true;
+                        PCsrc=false;
                         break;
                     case "1001" :
                         /*SW*/
@@ -136,6 +143,7 @@ public class InstructionDecode {
                         MemRead=false;
                         MemWrite=true;
                         Branch=false;
+                        PCsrc=false;
                         break;
                     case "1010" :
                         /*BEQ*/
@@ -144,6 +152,7 @@ public class InstructionDecode {
                         MemRead=false;
                         MemWrite=false;
                         Branch=true;
+                        PCsrc=false;
                         break;
                     case "1011" :
                         /*BLT*/
@@ -157,6 +166,7 @@ public class InstructionDecode {
                         MemWrite=false;
                         Branch=false;
                         MemToReg=false;
+                        PCsrc=false;
                         break;
                     default:
 
@@ -166,6 +176,7 @@ public class InstructionDecode {
                 RegWrite=false;
                 MemRead=false;
                 MemWrite=false;
+                PCsrc=true;
             default:
         }
     }

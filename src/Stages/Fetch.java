@@ -1,25 +1,33 @@
 package Stages;
 
+import Integrate.Main;
+
 public class Fetch {
 
-	static String PCincrementedByOne="00000000000000000000000000000000";
-	static String Theinstruction;
-	static String[] instructions = {"00010000000001000100010000000000","0010000000001000100010000000000","0011000000001000100010000000000","010000000000001000100010000000000","0101000000001000100010000000000","0110000000001000100010000000000","0111000000001000100010000000000","1000000000001000100010000000000","1001000000001000100010000000000","1010000000001000100010000000000","10110000001001000010110000000000","11000000001001000010110000000000","11010001100001000001100000000000","11100011100000000000000000000000"};
-	static Object[] IF_ID=new Object[2];
-	static Boolean PCSrc=false;
-	static String SignExResult;
+	public static String PCincrementedByOne="00000000000000000000000000000000";
+	public static String Theinstruction;
+	public static String[] instructions= Main.cache;
+	public static Object[] IF_ID=new Object[2];
+	public static Boolean PCSrc=InstructionDecode.PCsrc;
+	public static String SignExResult;
+	public static int flag=1;
 	
 //If U need anythings from this class call ProgCount() and it will do the job ~ By the order of Peaky Blinders
 		public static Object[] ProgCount()
 		{
-
+			System.out.println("\nFetch......."+"\n");
 			   //Fetching the current Instruction
 				 InstFetch(PCincrementedByOne);
                //incrementing the PC
-				 if(PCSrc==false) {
-			           PCincrementedByOne=String.format("%" + 32 + "s", Integer.toBinaryString(Integer.parseInt(PCincrementedByOne,2)+1)).replaceAll(" ", "0");}
+				 if(InstructionDecode.Branch) {
+				 	PCincrementedByOne=ALU.BranchAddressResult;
+				 }
+				 if (PCSrc){
+					 PCincrementedByOne=ALU.jumpAddress;
+				 }
 				 else {
-				       PCincrementedByOne=String.format("%" + 32 + "s", Integer.toBinaryString(Integer.parseInt(PCincrementedByOne,2)+Integer.parseInt(SignExResult,2))).replaceAll(" ", "0");}
+				       PCincrementedByOne=String.format("%" + 32 + "s", Integer.toBinaryString(Integer.parseInt(PCincrementedByOne,2)+1)).replaceAll(" ", "0");
+				 }
 				//Adding the outputs to Pipelined Register
 				  IF_ID[0]=PCincrementedByOne;
 				  IF_ID[1]=Theinstruction;
@@ -31,9 +39,12 @@ public class Fetch {
 
 		public static void InstFetch(String pc)
 		{
-			//get the intended instruction 
-			int c=Integer.parseInt(PCincrementedByOne,2);
-			Theinstruction=instructions[c];
+			//get the intended instruction
 
+			int c=Integer.parseInt(PCincrementedByOne,2);
+			if (c<instructions.length && instructions[c]!=null)
+				Theinstruction=instructions[c];
+			else
+				flag=0;
         }
 }

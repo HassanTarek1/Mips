@@ -11,6 +11,7 @@ public class WriteBack {
     static boolean[] signals;
     static int zero;
     public static void writeBack(Register[] regFile, Object[] reg){
+        System.out.println("\nWrite Back......."+"\n");
         rt=(String)reg[1];
         rd=(String)reg[2];
         dataFromMem=(String)reg[0];
@@ -19,13 +20,15 @@ public class WriteBack {
         zero=(int)reg[5];
         signals=(boolean[])reg[6];
 
-        if(signals[6]){
+        if(signals[6] && signals[3]){
             int rtInt=Integer.parseInt(rt,2);
             regFile[rtInt].setValue(Integer.parseInt(dataFromMem,2));
         }
         else{
-            int rdInt=Integer.parseInt(rd,2);
-            regFile[rdInt].setValue(ALUresult);
+            if(signals[2]) {
+                int rdInt = Integer.parseInt(rd, 2);
+                regFile[rdInt].setValue(ALUresult);
+            }
         }
     }
 }

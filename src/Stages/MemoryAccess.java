@@ -1,5 +1,7 @@
 package Stages;
 
+import Integrate.Main;
+
 public class MemoryAccess {
     static int zero;
     static String rt;
@@ -10,7 +12,8 @@ public class MemoryAccess {
     static boolean[] signals;
     static String dataFromMem;
 
-    public static Object[] memAccess(int[] memory, Object[] ALUreg){
+    public static Object[] memAccess(String[] memory, Object[] ALUreg){
+        System.out.println("\nMemory Access......."+"\n");
         zero=(int)ALUreg[0];
         ALUresult=(int)ALUreg[2];
         readData1=(String)ALUreg[3];
@@ -27,13 +30,14 @@ public class MemoryAccess {
         else{
             int add=ALUresult;
             if(signals[3]){
-                dataFromMem=intToBin(memory[add]);
+                dataFromMem=(memory[add]);
                 System.out.println("memory word read: "+dataFromMem
                         +"\nrt/rd field: "+rt);
             }
             if (signals[4]){
                 int wrtData=Integer.parseInt(readData2,2);
-                memory[add]=wrtData;
+                String wrtD=intToBin(wrtData);
+                memory[add]=wrtD;
                 System.out.println("memory word read: "+readData2
                         +"\nrt/rd field: "+rt);
             }

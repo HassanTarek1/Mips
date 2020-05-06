@@ -1,13 +1,11 @@
 package Stages;
 
-import java.util.Arrays;
-
 public class ALU {
 
 	static int zero;
 	static String Opcode;
-	static String BranchAddressResult; 
-	static int ALUresult;
+	public static String BranchAddressResult;
+	public static int ALUresult;
 	static boolean[] signals;
 	static String ReadData1;
 	static String ReadData2;
@@ -16,12 +14,14 @@ public class ALU {
 	static String rt;
 	static String rs;
 	static String nxtpc;
+	public static String jumpAddress;
 	static boolean RegDst=false,RegWrite=false,ALUSrc=false,Branch=false,MemRead=false,MemWrite=false,MemToReg=false;
 
     //PipReg to be edited
 	//all control values are taken from Hoba and also their print 
 	
 	public static Object[] Execute(Object[] PipReg) {
+		System.out.println("\nALU......."+"\n");
 		signals=(boolean[])PipReg[8];
 		Opcode=(String)PipReg[0];
 		ReadData1=(String)PipReg[1];
@@ -30,7 +30,11 @@ public class ALU {
 		rt=(String)PipReg[4];
 		rs=(String)PipReg[5];
 		signExtend=(String)PipReg[6];
-		nxtpc=(String)PipReg[7];
+		jumpAddress=(String)PipReg[7];
+		while (jumpAddress!=null && jumpAddress.length()<32){
+			jumpAddress="0"+jumpAddress;
+		}
+		nxtpc=(String) Fetch.IF_ID[0];
 		RegDst=signals[0];RegWrite=signals[2];
 				ALUSrc=signals[1];Branch=signals[5]
 				;MemRead=signals[3];MemWrite=signals[4];MemToReg=signals[6];
